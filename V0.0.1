@@ -1,0 +1,11 @@
+# @title 🔧 1. 补齐核心依赖 (修复 Python 3.12 兼容性)
+%cd /content/GPT-SoVITS
+
+# 安装缺失的核心处理库（跳过报错的 opencc）
+!pip install pypinyin sentencepiece transformers librosa==0.10.1 opencc-python-reimplemented
+!pip install einops rotary_embedding_torch ffmpeg-python
+
+# 强制安装 GPU 版 Torch (确保云端 T4 显卡被正确调用)
+!pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+
+print("✅ 依赖补救完成，可以启动！")
