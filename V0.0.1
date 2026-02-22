@@ -9,3 +9,35 @@
 !pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 
 print("✅ 依赖补救完成，可以启动！")
+
+# @title 🚀 2. 启动推理界面 (获取公网链接)
+import os
+%cd /content/GPT-SoVITS
+
+# 1. 自动迁移模型权重 (如果已下载)
+!mkdir -p GPT_SoVITS/pretrained_models
+if os.path.exists("/content/GPT-SoVITS/pretrained_models_download"):
+    !cp -r /content/GPT-SoVITS/pretrained_models_download/* /content/GPT-SoVITS/GPT_SoVITS/pretrained_models/ 2>/dev/null
+    print("✅ 预训练模型已部署到位")
+
+# 2. 启动主程序
+# --share: 必须开启，否则本地 Mac 无法访问
+# --is_half 1: 开启半精度，加快速度并节省显存
+!python webui.py --share --is_half 1
+
+# 将模型保存到你的 Google Drive，下次直接从网盘读取
+from google.colab import drive
+drive.mount('/content/drive')
+!cp -r /content/GPT-SoVITS/pretrained_models_download /content/drive/MyDrive/GPT-SoVITS-Models
+
+# @title 🚀 点击运行，获取推理链接
+%cd /content/GPT-SoVITS
+
+# 1. 确保预训练模型已经在正确位置
+!mkdir -p GPT_SoVITS/pretrained_models
+!cp -r /content/GPT-SoVITS/pretrained_models_download/* /content/GPT-SoVITS/GPT_SoVITS/pretrained_models/ 2>/dev/null || echo "Models already OK"
+
+# 2. 启动 WebUI
+# --share 会生成一个 .gradio.live 的公网链接
+# --is_half 1 使用半精度，能让云端显卡跑得更顺滑
+!python webui.py --share --is_half 1
